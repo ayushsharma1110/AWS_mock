@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Example Stack
+
+Parameters:
+  BucketName:
+    Type: String
+#    bucket name created and put in parameters, during the run time it will ask if want to change
+    Default: lambdabuckect
+
+
+Resources:
+  Bucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    BucketName: !Ref BucketName
+
+#Creating a trigger whenever .csv file read the function will be called
+#Trigger on the bucket at line 8
+
+    NotificationConfiguration:
+      LambdaConfigurations:
+        -Event: 's3:ObjectCreated: *'
+        Filter:
+          s3Key:
+            RuLes:
+              - Name: suffix
+                Value: .csv
+        Function: !GetAtt Lambda.Arn
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: "lambda_function"
+      Handler: Lambda_function.Lambda_handler
+      Role: arn:aws:iam::045770358666:role/newlambdarole
+      Code:
+        S3Bucket: 045770358666-eu-north-1-staging-files
+        S3key: code/lambda_function.zip
+      Runtime: "python3.8"
+      Timeout: 300
+      MemorySize: 512
+      TracingConfig:
+        Mode: Active
+
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Lambda
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub arn:aws:s3:::${BucketName}
+
+
+
+
+
+
+
+
+
+
