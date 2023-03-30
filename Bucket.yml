@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'creating s3 bucket'
+
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Join ["-", [!Ref "AWS::AccountId", !Ref "AWS::Region", "staging-files"]]
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
