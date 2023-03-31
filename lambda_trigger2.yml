@@ -33,7 +33,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: "lambda_function"
-      Handler: Lambda_function.Lambda_handler
+      Handler: lambda_function.lambda_handler
       Role: arn:aws:iam::045770358666:role/newlambdarole
       Code:
         S3Bucket: 045770358666-eu-north-1-staging-files
